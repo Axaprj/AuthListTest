@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SessionData;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,21 +17,30 @@ namespace AuthListTest
         static void Main(string[] args)
         {
             Console.WriteLine("Authorization List Checker Test");
-            Console.WriteLine("AuthListTest [-RAW] [-ITERATIONS <#>] [-THREADS <#>]");
+            Console.WriteLine("AuthListTest [-INIT] [-RAW] [-ITERATIONS <#>] [-THREADS <#>]");
             bool is_raw = false;
+            bool is_init = false;
             int thread_cnt = DEFAULT_THREAD_CNT;
             int iter_cnt = DEFAULT_ITERATION_CNT;
             for (int inx = 0; inx < args.Length; inx++)
             {
                 if ("-RAW".Equals(args[inx], StringComparison.InvariantCultureIgnoreCase))
                     is_raw = true;
+                else if ("-INIT".Equals(args[inx], StringComparison.InvariantCultureIgnoreCase))
+                    is_init = true;
                 else if ("-ITERATIONS".Equals(args[inx], StringComparison.InvariantCultureIgnoreCase))
                     iter_cnt = int.Parse(args[inx + 1]);
                 else if ("-THREADS".Equals(args[inx], StringComparison.InvariantCultureIgnoreCase))
                     thread_cnt = int.Parse(args[inx + 1]);
             }
             Console.WriteLine("AuthListTest "
-                + (is_raw ? "-RAW" : "") + " -ITERATIONS " + iter_cnt + " -THREADS " + thread_cnt);
+                + (is_init ? "-INIT " : "") + (is_raw ? "-RAW " : "") 
+                + " -ITERATIONS " + iter_cnt + " -THREADS " + thread_cnt);
+
+            if (is_init)
+            {
+                DbManager.InitializeDB();
+            }
 
             var started = DateTime.Now;
             for (int i = 0; i < thread_cnt; i++)
