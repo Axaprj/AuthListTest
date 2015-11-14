@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace SessionData
 {
-    interface ISessionManager
+    public interface ISessionManager
     {
-        void CreateSession(int user_id);
-        bool IsSession(int user_id);
-        void CloseSession(int user_id);
+        void CreateSession(long user_id);
+        bool IsSession(long user_id);
+        void CloseSession(long user_id);
     }
 }

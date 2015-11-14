@@ -8,17 +8,17 @@ namespace SessionData
 {
     public class SessionManager : ISessionManager
     {
-        void ISessionManager.CloseSession(int user_id)
+        void ISessionManager.CloseSession(long user_id)
         {
             DbManager.CloseSession(user_id);
         }
 
-        void ISessionManager.CreateSession(int user_id)
+        void ISessionManager.CreateSession(long user_id)
         {
             DbManager.CreateSession(user_id);
         }
 
-        bool ISessionManager.IsSession(int user_id)
+        bool ISessionManager.IsSession(long user_id)
         {
             return DbManager.GetSession(user_id, set_activity:true) != null;
         }

@@ -11,7 +11,7 @@ namespace AuthListTest
     class Program
     {
         const int DEFAULT_THREAD_CNT = 20;
-        const int DEFAULT_ITERATION_CNT = 1000;
+        const int DEFAULT_ITERATION_CNT = 100;
         static long FinishedThreadsCount = 0;
 
         static void Main(string[] args)
@@ -39,14 +39,18 @@ namespace AuthListTest
 
             if (is_init)
             {
-                DbManager.InitializeDB();
+                Console.WriteLine("DB initialization");
+                DbManager.InitializeDB(thread_cnt);
+                Console.WriteLine("Done");
             }
 
+            User[] users = DbManager.GetUsers(thread_cnt);
             var started = DateTime.Now;
             for (int i = 0; i < thread_cnt; i++)
             {
                 var tinfo = new
                 {
+                    UserId = users[i].Id,
                     IsRaw = is_raw,
                     IterationCount = iter_cnt,
                     ThreadIndex = i
@@ -57,7 +61,7 @@ namespace AuthListTest
             {
                 Thread.Sleep(1);
             }
-            Console.WriteLine("TOTAL: " + DateTime.Now.Subtract(started).TotalMilliseconds + "ms");
+            Console.WriteLine("TOTAL: " + (int)DateTime.Now.Subtract(started).TotalMilliseconds + "ms");
         }
 
         static void TestThreadProc(Object stateInfo)
@@ -67,6 +71,12 @@ namespace AuthListTest
             Console.WriteLine(lbl + " start");
             try
             {
+                var test = new AuthorizationCheckerTest() {
+                    UserId = tinfo.UserId,
+                    IterationCount = tinfo.IterationCount,
+                    SessionMgr = (tinfo.IsRaw ? new SessionManager() : null)
+                };
+                test.DoTest();
                 Console.WriteLine(lbl + " stop");
             }
             catch (Exception ex)

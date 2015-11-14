@@ -8,13 +8,11 @@ namespace SessionData
 {
     public class DbManager
     {
-
-
-        public static void InitializeDB()
+        public static void InitializeDB(int users_count)
         {
             using (var dbx = new SessionsContainer())
             {
-                for (int inx = 0; inx < 1000; inx++)
+                for (int inx = 0; inx < users_count; inx++)
                 {
                     var usr = new User() { Name = "user" + inx };
                     dbx.User.Add(usr);
@@ -23,7 +21,26 @@ namespace SessionData
             }
         }
 
-        public static void CloseSession(int user_id)
+        public static User[] GetUsers(int count)
+        {
+            using (var dbx = new SessionsContainer())
+            {
+                return dbx.User.Take(count).ToArray();
+            }
+        }
+
+
+        public static void CloseSession(long user_id)
+        {
+            using (var dbx = new SessionsContainer())
+            {
+                var sess = dbx.Session.Where(s => s.UserId == user_id).FirstOrDefault();
+                dbx.Session.Remove(sess);
+                dbx.SaveChanges();
+            }
+        }
+
+        public static void CreateSession(long user_id)
         {
             using (var dbx = new SessionsContainer())
             {
@@ -34,17 +51,7 @@ namespace SessionData
             }
         }
 
-        public static void CreateSession(int user_id)
-        {
-            using (var dbx = new SessionsContainer())
-            {
-                var sess = dbx.Session.Where(s => s.UserId == user_id).FirstOrDefault();
-                dbx.Session.Remove(sess);
-                dbx.SaveChanges();
-            }
-        }
-
-        public static Session GetSession(int user_id, bool set_activity)
+        public static Session GetSession(long user_id, bool set_activity)
         {
             using (var dbx = new SessionsContainer())
             {
