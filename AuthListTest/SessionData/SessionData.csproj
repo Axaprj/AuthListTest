@@ -66,13 +66,16 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbManager.cs" />
+    <Compile Include="ISessionManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Role.cs">
       <DependentUpon>Sessions.tt</DependentUpon>
     </Compile>
+    <Compile Include="Session.add.cs" />
     <Compile Include="Session.cs">
       <DependentUpon>Sessions.tt</DependentUpon>
     </Compile>
+    <Compile Include="SessionManager.cs" />
     <Compile Include="Sessions.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

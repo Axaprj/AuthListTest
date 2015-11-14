@@ -8,7 +8,7 @@ namespace SessionData
 {
     public class DbManager
     {
-        const int ACTIVITY_GRAIN_MSEC = 3000;
+
 
         public static void InitializeDB()
         {
@@ -23,7 +23,7 @@ namespace SessionData
             }
         }
 
-        public static void CreateSession(int user_id)
+        public static void CloseSession(int user_id)
         {
             using (var dbx = new SessionsContainer())
             {
@@ -34,17 +34,26 @@ namespace SessionData
             }
         }
 
-        public static Session GetSession(int user_id)
+        public static void CreateSession(int user_id)
         {
             using (var dbx = new SessionsContainer())
             {
                 var sess = dbx.Session.Where(s => s.UserId == user_id).FirstOrDefault();
-                if (sess != null)
+                dbx.Session.Remove(sess);
+                dbx.SaveChanges();
+            }
+        }
+
+        public static Session GetSession(int user_id, bool set_activity)
+        {
+            using (var dbx = new SessionsContainer())
+            {
+                var sess = dbx.Session.Where(s => s.UserId == user_id).FirstOrDefault();
+                if (set_activity && sess != null)
                 {
-                    var ts = DateTime.Now;
-                    if (ACTIVITY_GRAIN_MSEC > ts.Subtract(sess.LastActivity).TotalMilliseconds)
+                    if (sess.IsActivityUpdateRequired)
                     {
-                        sess.LastActivity = ts;
+                        sess.LastActivity = DateTime.Now;
                         dbx.SaveChanges();
                     }
                 }
