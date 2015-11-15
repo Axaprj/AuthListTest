@@ -12,6 +12,7 @@ namespace SessionData
         {
             using (var dbx = new SessionsContainer())
             {
+                users_count = users_count - dbx.User.Count();
                 for (int inx = 0; inx < users_count; inx++)
                 {
                     var usr = new User() { Name = "user" + inx };
