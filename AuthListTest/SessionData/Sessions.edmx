@@ -17,7 +17,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="UserId" Type="integer" />
+          <Property Name="UserId" Type="integer" Nullable="false" />
           <Property Name="Created" Type="datetime" Nullable="false" />
           <Property Name="LastActivity" Type="datetime" Nullable="false" />
         </EntityType>
@@ -37,7 +37,7 @@
           <Property Name="RoleId" Type="integer" Nullable="false" />
         </EntityType>
         <Association Name="FK_Session_0_0">
-          <End Role="User" Type="Self.User" Multiplicity="0..1" />
+          <End Role="User" Type="Self.User" Multiplicity="1" />
           <End Role="Session" Type="Self.Session" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">
@@ -94,7 +94,7 @@
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema xmlns="http://schemas.microsoft.com/ado/2009/11/edm" xmlns:cg="http://schemas.microsoft.com/ado/2006/04/codegeneration" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" Namespace="Sessions" Alias="Self" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" annotation:UseStrongSpatialTypes="false">
-        <EntityContainer Name="SessionsContainer" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="SessionsContainer" annotation:LazyLoadingEnabled="false">
           <EntitySet Name="Role" EntityType="Sessions.Role" />
           <EntitySet Name="Session" EntityType="Sessions.Session" />
           <EntitySet Name="User" EntityType="Sessions.User" />
@@ -120,7 +120,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="UserId" Type="Int64" />
+          <Property Name="UserId" Type="Int64" Nullable="false" />
           <Property Name="Created" Type="DateTime" Nullable="false" />
           <Property Name="LastActivity" Type="DateTime" Nullable="false" />
           <NavigationProperty Name="User" Relationship="Sessions.FK_Session_0_0" FromRole="Session" ToRole="User" />
@@ -135,7 +135,7 @@
           <NavigationProperty Name="Role" Relationship="Sessions.UserRole" FromRole="User" ToRole="Role" />
         </EntityType>
         <Association Name="FK_Session_0_0">
-          <End Type="Sessions.User" Role="User" Multiplicity="0..1" />
+          <End Type="Sessions.User" Role="User" Multiplicity="1" />
           <End Type="Sessions.Session" Role="Session" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="User">

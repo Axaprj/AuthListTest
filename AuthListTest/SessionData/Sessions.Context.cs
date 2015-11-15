@@ -18,6 +18,7 @@ namespace SessionData
         public SessionsContainer()
             : base("name=SessionsContainer")
         {
+            this.Configuration.LazyLoadingEnabled = false;
         }
     
         protected override void OnModelCreating(DbModelBuilder modelBuilder)

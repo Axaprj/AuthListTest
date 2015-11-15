@@ -15,8 +15,12 @@ namespace SessionData
                 users_count = users_count - dbx.User.Count();
                 for (int inx = 0; inx < users_count; inx++)
                 {
-                    var usr = new User() { Name = "user" + inx };
+                    var usr = new User() { Name = "user" + Guid.NewGuid() };
                     dbx.User.Add(usr);
+                }
+                foreach(var sess in dbx.Session)
+                {
+                    dbx.Session.Remove(sess);
                 }
                 dbx.SaveChanges();
             }
@@ -41,7 +45,7 @@ namespace SessionData
             }
         }
 
-        public static void CreateSession(long user_id)
+        public static Session CreateSession(long user_id)
         {
             using (var dbx = new SessionsContainer())
             {
@@ -49,6 +53,7 @@ namespace SessionData
                 var sess = new Session() { UserId = user_id, Created = ts, LastActivity = ts };
                 dbx.Session.Add(sess);
                 dbx.SaveChanges();
+                return sess;
             }
         }
 
@@ -76,5 +81,23 @@ namespace SessionData
                 return dbx.Session.ToArray();
             }
         }
+
+        public static void UpdateActivity(Session[] sessions)
+        {
+            foreach (var sess in sessions)
+            {
+                if (sess.IsActivityUpdateRequired)
+                {
+                    using (var dbx = new SessionsContainer())
+                    {
+                        var db_sess = dbx.Session.Where(s=>s.Id == sess.Id).FirstOrDefault();
+                        if (db_sess == null) continue;
+                        db_sess.LastActivity = DateTime.Now;
+                        dbx.SaveChanges();
+                    }
+                }
+            }
+        }
+
     }
 }

@@ -8,7 +8,7 @@ namespace SessionData
 {
     public partial class Session
     {
-        const int ACTIVITY_GRAIN_MSEC = 3000;
+        const int ACTIVITY_GRAIN_MSEC = 1000;
 
         public bool IsActivityUpdateRequired
         {
