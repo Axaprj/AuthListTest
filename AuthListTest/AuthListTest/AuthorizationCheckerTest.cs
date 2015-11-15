@@ -9,6 +9,7 @@ namespace AuthListTest
 {
     class AuthorizationCheckerTest
     {
+        public int ThreadIndex;
         public long UserId;
         public int IterationCount;
         public ISessionManager SessionMgr;

@@ -35,7 +35,7 @@ namespace AuthListTest
             }
             Console.WriteLine("AuthListTest "
                 + (is_init ? "-INIT " : "") + (is_raw ? "-RAW " : "") 
-                + " -ITERATIONS " + iter_cnt + " -THREADS " + thread_cnt);
+                + "-ITERATIONS " + iter_cnt + " -THREADS " + thread_cnt);
 
             if (is_init)
             {
@@ -48,14 +48,16 @@ namespace AuthListTest
             var started = DateTime.Now;
             for (int i = 0; i < thread_cnt; i++)
             {
-                var tinfo = new
+                var test = new AuthorizationCheckerTest()
                 {
+                    ThreadIndex = i,
                     UserId = users[i].Id,
-                    IsRaw = is_raw,
                     IterationCount = iter_cnt,
-                    ThreadIndex = i
+                    SessionMgr = (is_raw ?
+                        (ISessionManager) new SessionManager() : new SessionCacheManager())
                 };
-                ThreadPool.QueueUserWorkItem(new WaitCallback(TestThreadProc), tinfo);
+
+                ThreadPool.QueueUserWorkItem(new WaitCallback(TestThreadProc), test);
             }
             while (Interlocked.Read(ref FinishedThreadsCount) < thread_cnt)
             {
@@ -66,16 +68,11 @@ namespace AuthListTest
 
         static void TestThreadProc(Object stateInfo)
         {
-            var tinfo = (dynamic)stateInfo;
-            var lbl = "#" + tinfo.ThreadIndex;
+            var test = (AuthorizationCheckerTest)stateInfo;
+            var lbl = "#" + test.ThreadIndex;
             Console.WriteLine(lbl + " start");
             try
             {
-                var test = new AuthorizationCheckerTest() {
-                    UserId = tinfo.UserId,
-                    IterationCount = tinfo.IterationCount,
-                    SessionMgr = (tinfo.IsRaw ? new SessionManager() : null)
-                };
                 test.DoTest();
                 Console.WriteLine(lbl + " stop");
             }
