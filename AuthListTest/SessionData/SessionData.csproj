@@ -75,6 +75,7 @@
     <Compile Include="Session.cs">
       <DependentUpon>Sessions.tt</DependentUpon>
     </Compile>
+    <Compile Include="SessionCache.cs" />
     <Compile Include="SessionCacheManager.cs" />
     <Compile Include="SessionManager.cs" />
     <Compile Include="Sessions.Context.cs">

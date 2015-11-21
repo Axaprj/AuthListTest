@@ -14,7 +14,7 @@ namespace SessionData
     
     public partial class Session
     {
-        public long Id { get; set; }
+        public string Id { get; set; }
         public long UserId { get; set; }
         public System.DateTime Created { get; set; }
         public System.DateTime LastActivity { get; set; }

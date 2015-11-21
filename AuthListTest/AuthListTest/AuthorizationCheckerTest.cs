@@ -16,12 +16,15 @@ namespace AuthListTest
 
         public void DoTest()
         {
-            SessionMgr.CreateSession(UserId);
-            for(int inx=0; inx<IterationCount; inx++)
+            var session_guid = SessionMgr.CreateSession(UserId).SessionGuid;
+            for (int inx = 0; inx < IterationCount; inx++)
             {
-                SessionMgr.IsSession(UserId);
+                if (SessionMgr.GetSessionUser(session_guid) == null)
+                {
+                    throw new Exception("Session [" + session_guid + "] not found");
+                }
             }
-            SessionMgr.CloseSession(UserId);
+            SessionMgr.CloseSession(session_guid);
         }
     }
 }

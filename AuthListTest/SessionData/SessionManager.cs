@@ -8,19 +8,20 @@ namespace SessionData
 {
     public class SessionManager : ISessionManager
     {
-        void ISessionManager.CloseSession(long user_id)
+        void ISessionManager.CloseSession(Guid session_guid)
         {
-            DbManager.CloseSession(user_id);
+            DbManager.CloseSession(session_guid);
         }
 
-        void ISessionManager.CreateSession(long user_id)
+        Session ISessionManager.CreateSession(long user_id)
         {
-            DbManager.CreateSession(user_id);
+            return DbManager.CreateSession(user_id);
         }
 
-        bool ISessionManager.IsSession(long user_id)
+        User ISessionManager.GetSessionUser(Guid session_guid)
         {
-            return DbManager.GetSession(user_id, set_activity:true) != null;
+            var sess = DbManager.GetSession(session_guid, set_activity: true);
+            return (sess == null ? null : sess.User); 
         }
     }
 }

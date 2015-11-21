@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Data.Entity;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +19,7 @@ namespace SessionData
                     var usr = new User() { Name = "user" + Guid.NewGuid() };
                     dbx.User.Add(usr);
                 }
-                foreach(var sess in dbx.Session)
+                foreach (var sess in dbx.Session)
                 {
                     dbx.Session.Remove(sess);
                 }
@@ -35,11 +36,11 @@ namespace SessionData
         }
 
 
-        public static void CloseSession(long user_id)
+        public static void CloseSession(Guid session_guid)
         {
             using (var dbx = new SessionsContainer())
             {
-                var sess = dbx.Session.Where(s => s.UserId == user_id).FirstOrDefault();
+                var sess = dbx.Session.Where(s => s.SessionGuid == session_guid).FirstOrDefault();
                 dbx.Session.Remove(sess);
                 dbx.SaveChanges();
             }
@@ -50,18 +51,27 @@ namespace SessionData
             using (var dbx = new SessionsContainer())
             {
                 var ts = DateTime.Now;
-                var sess = new Session() { UserId = user_id, Created = ts, LastActivity = ts };
+                var sess = new Session()
+                {
+                    Id = Guid.NewGuid().ToString(),
+                    UserId = user_id,
+                    Created = ts,
+                    LastActivity = ts
+                };
                 dbx.Session.Add(sess);
                 dbx.SaveChanges();
                 return sess;
             }
         }
 
-        public static Session GetSession(long user_id, bool set_activity)
+        public static Session GetSession(Guid session_guid, bool set_activity)
         {
             using (var dbx = new SessionsContainer())
             {
-                var sess = dbx.Session.Where(s => s.UserId == user_id).FirstOrDefault();
+                var sqlite_guid = session_guid.ToString();
+                var qry =
+                    dbx.Session.Include(s => s.User).Where(s => s.Id == sqlite_guid);
+                var sess = qry.FirstOrDefault();
                 if (set_activity && sess != null)
                 {
                     if (sess.IsActivityUpdateRequired)
@@ -78,7 +88,7 @@ namespace SessionData
         {
             using (var dbx = new SessionsContainer())
             {
-                return dbx.Session.ToArray();
+                return dbx.Session.Include(s => s.User).ToArray();
             }
         }
 
@@ -90,7 +100,8 @@ namespace SessionData
                 {
                     using (var dbx = new SessionsContainer())
                     {
-                        var db_sess = dbx.Session.Where(s=>s.Id == sess.Id).FirstOrDefault();
+                        var db_sess = dbx.Session.Where(
+                            s => s.SessionGuid == sess.SessionGuid).FirstOrDefault();
                         if (db_sess == null) continue;
                         db_sess.LastActivity = DateTime.Now;
                         dbx.SaveChanges();

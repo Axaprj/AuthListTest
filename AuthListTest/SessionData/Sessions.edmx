@@ -16,7 +16,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="integer" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Id" Type="nvarchar" MaxLength="2147483647" Nullable="false" />
           <Property Name="UserId" Type="integer" Nullable="false" />
           <Property Name="Created" Type="datetime" Nullable="false" />
           <Property Name="LastActivity" Type="datetime" Nullable="false" />
@@ -119,7 +119,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="String" Nullable="false" MaxLength="2147483647" FixedLength="false" Unicode="true" />
           <Property Name="UserId" Type="Int64" Nullable="false" />
           <Property Name="Created" Type="DateTime" Nullable="false" />
           <Property Name="LastActivity" Type="DateTime" Nullable="false" />
@@ -169,10 +169,10 @@
           <EntitySetMapping Name="Session">
             <EntityTypeMapping TypeName="Sessions.Session">
               <MappingFragment StoreEntitySet="Session">
+                <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="LastActivity" ColumnName="LastActivity" />
                 <ScalarProperty Name="Created" ColumnName="Created" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
