@@ -16,8 +16,6 @@ namespace SessionData
 
         public SessionCache()
         {
-            foreach (var sess in DbManager.GetSessions())
-                Cache.Add(sess.SessionGuid, sess);
             CacheThread = new Thread(new ThreadStart(handlerCacheRefresh));
             CacheThread.Start();
         }
@@ -26,7 +24,6 @@ namespace SessionData
         {
             while (true)
             {
-                Thread.Sleep(REFRESH_TIMEOUT_MSEC);
                 Session[] sessions;
                 Cache_Lock.EnterReadLock();
                 try
@@ -50,6 +47,7 @@ namespace SessionData
                 {
                     Cache_Lock.ExitWriteLock();
                 }
+                Thread.Sleep(REFRESH_TIMEOUT_MSEC);
             }
         }
 
@@ -58,7 +56,7 @@ namespace SessionData
             Cache_Lock.EnterWriteLock();
             try
             {
-                if (Cache.ContainsKey(sess.SessionGuid))
+                if (!Cache.ContainsKey(sess.SessionGuid))
                 {
                     Cache.Add(sess.SessionGuid, sess);
                 }

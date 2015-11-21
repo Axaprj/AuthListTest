@@ -16,7 +16,7 @@ namespace AuthListTest
 
         public void DoTest()
         {
-            var session_guid = SessionMgr.CreateSession(UserId).SessionGuid;
+            var session_guid = CreateSession();
             for (int inx = 0; inx < IterationCount; inx++)
             {
                 if (SessionMgr.GetSessionUser(session_guid) == null)
@@ -25,6 +25,14 @@ namespace AuthListTest
                 }
             }
             SessionMgr.CloseSession(session_guid);
+        }
+
+        Guid CreateSession()
+        {
+            return (ThreadIndex % 2 == 0 ?
+                SessionMgr.CreateSession(UserId).SessionGuid :
+                DbManager.CreateSession(UserId).SessionGuid
+            );
         }
     }
 }

@@ -40,7 +40,8 @@ namespace SessionData
         {
             using (var dbx = new SessionsContainer())
             {
-                var sess = dbx.Session.Where(s => s.SessionGuid == session_guid).FirstOrDefault();
+                var sqlite_guid = session_guid.ToString();
+                var sess = dbx.Session.Where(s => s.Id == sqlite_guid).FirstOrDefault();
                 dbx.Session.Remove(sess);
                 dbx.SaveChanges();
             }
@@ -51,15 +52,17 @@ namespace SessionData
             using (var dbx = new SessionsContainer())
             {
                 var ts = DateTime.Now;
+                var sqlite_guid = Guid.NewGuid().ToString();
                 var sess = new Session()
                 {
-                    Id = Guid.NewGuid().ToString(),
+                    Id = sqlite_guid,
                     UserId = user_id,
                     Created = ts,
                     LastActivity = ts
                 };
                 dbx.Session.Add(sess);
                 dbx.SaveChanges();
+                sess = dbx.Session.Include(s => s.User).Where(s => s.Id == sqlite_guid).First();
                 return sess;
             }
         }
@@ -100,8 +103,9 @@ namespace SessionData
                 {
                     using (var dbx = new SessionsContainer())
                     {
+                        var sqlite_guid = sess.SessionGuid.ToString();
                         var db_sess = dbx.Session.Where(
-                            s => s.SessionGuid == sess.SessionGuid).FirstOrDefault();
+                            s => s.Id == sqlite_guid).FirstOrDefault();
                         if (db_sess == null) continue;
                         db_sess.LastActivity = DateTime.Now;
                         dbx.SaveChanges();

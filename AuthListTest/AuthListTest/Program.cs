@@ -10,8 +10,8 @@ namespace AuthListTest
 {
     class Program
     {
-        const int DEFAULT_THREAD_CNT = 1;
-        const int DEFAULT_ITERATION_CNT = 1;
+        const int DEFAULT_THREAD_CNT = 20;
+        const int DEFAULT_ITERATION_CNT = 1000;
         static long FinishedThreadsCount = 0;
 
         static void Main(string[] args)
