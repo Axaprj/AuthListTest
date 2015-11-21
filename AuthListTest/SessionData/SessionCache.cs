@@ -6,13 +6,14 @@ using System.Threading;
 
 namespace SessionData
 {
-    public class SessionCache
+    public class SessionCache : IDisposable
     {
         const int REFRESH_TIMEOUT_MSEC = 1000;
 
         readonly ReaderWriterLockSlim Cache_Lock = new ReaderWriterLockSlim();
         readonly Dictionary<Guid, Session> Cache = new Dictionary<Guid, Session>();
         readonly Thread CacheThread;
+        DateTime RefreshTS = DateTime.MinValue;
 
         public SessionCache()
         {
@@ -24,6 +25,12 @@ namespace SessionData
         {
             while (true)
             {
+                var obsolescence_msec = DateTime.Now.Subtract(RefreshTS).TotalMilliseconds;
+                if(obsolescence_msec < REFRESH_TIMEOUT_MSEC)
+                {
+                    Thread.Sleep((int)(REFRESH_TIMEOUT_MSEC - obsolescence_msec));
+                }
+
                 Session[] sessions;
                 Cache_Lock.EnterReadLock();
                 try
@@ -36,6 +43,7 @@ namespace SessionData
                 }
                 DbManager.UpdateActivity(sessions);
                 sessions = DbManager.GetSessions();
+                RefreshTS = DateTime.Now;
                 Cache_Lock.EnterWriteLock();
                 try
                 {
@@ -47,7 +55,6 @@ namespace SessionData
                 {
                     Cache_Lock.ExitWriteLock();
                 }
-                Thread.Sleep(REFRESH_TIMEOUT_MSEC);
             }
         }
 
@@ -59,6 +66,22 @@ namespace SessionData
                 if (!Cache.ContainsKey(sess.SessionGuid))
                 {
                     Cache.Add(sess.SessionGuid, sess);
+                }
+            }
+            finally
+            {
+                Cache_Lock.ExitWriteLock();
+            }
+        }
+
+        public void RemoveSession(Guid session_guid)
+        {
+            Cache_Lock.EnterWriteLock();
+            try
+            {
+                if (Cache.ContainsKey(session_guid))
+                {
+                    Cache.Remove(session_guid);
                 }
             }
             finally
@@ -99,5 +122,28 @@ namespace SessionData
                 Cache_Lock.ExitUpgradeableReadLock();
             }
         }
+
+        #region IDisposable Support
+        private bool disposedValue = false; 
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                if (disposing)
+                {
+                    CacheThread.Abort();
+                }
+                disposedValue = true;
+            }
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+        }
+        #endregion
     }
 }

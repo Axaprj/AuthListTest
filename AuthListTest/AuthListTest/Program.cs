@@ -11,7 +11,7 @@ namespace AuthListTest
     class Program
     {
         const int DEFAULT_THREAD_CNT = 20;
-        const int DEFAULT_ITERATION_CNT = 1000;
+        const int DEFAULT_ITERATION_CNT = 100;
         static long FinishedThreadsCount = 0;
 
         static void Main(string[] args)
@@ -39,6 +39,8 @@ namespace AuthListTest
 
             User[] users = DbManager.GetUsers(thread_cnt);
             var started = DateTime.Now;
+            ThreadPool.SetMaxThreads(thread_cnt, thread_cnt);
+            ThreadPool.SetMinThreads(thread_cnt, thread_cnt);
             for (int i = 0; i < thread_cnt; i++)
             {
                 var test = new AuthorizationCheckerTest()
@@ -57,6 +59,7 @@ namespace AuthListTest
                 Thread.Sleep(0);
             }
             Console.WriteLine("TOTAL: " + (int)DateTime.Now.Subtract(started).TotalMilliseconds + "ms");
+            SessionCacheManager.TerminateCaching();
         }
 
         static void TestThreadProc(Object stateInfo)

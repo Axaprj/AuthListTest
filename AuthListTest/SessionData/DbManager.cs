@@ -4,6 +4,7 @@ using System.Linq;
 using System.Data.Entity;
 using System.Text;
 using System.Threading.Tasks;
+using System.Data.Entity.Infrastructure;
 
 namespace SessionData
 {
@@ -101,15 +102,23 @@ namespace SessionData
             {
                 if (sess.IsActivityUpdateRequired)
                 {
-                    using (var dbx = new SessionsContainer())
+                    try
                     {
-                        var sqlite_guid = sess.SessionGuid.ToString();
-                        var db_sess = dbx.Session.Where(
-                            s => s.Id == sqlite_guid).FirstOrDefault();
-                        if (db_sess == null) continue;
-                        db_sess.LastActivity = DateTime.Now;
-                        dbx.SaveChanges();
+                        using (var dbx = new SessionsContainer())
+                        {
+                            var sqlite_guid = sess.SessionGuid.ToString();
+                            var db_sess = dbx.Session.Where(
+                                s => s.Id == sqlite_guid).FirstOrDefault();
+                            if (db_sess == null) continue;
+                            db_sess.LastActivity = DateTime.Now;
+                            dbx.SaveChanges();
+                        }
                     }
+                    catch (DbUpdateConcurrencyException cex)
+                    {
+                        var hres = cex.HResult;
+                    }
+
                 }
             }
         }

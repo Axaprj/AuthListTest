@@ -27,9 +27,22 @@ namespace SessionData
             }
         }
 
+        public static void TerminateCaching()
+        {
+            lock (CacheLock)
+            {
+                if (_sessCache != null)
+                {
+                    _sessCache.Dispose();
+                    _sessCache = null;
+                }
+            }
+        }
+
         void ISessionManager.CloseSession(Guid session_guid)
         {
             DbManager.CloseSession(session_guid);
+            SessCache.RemoveSession(session_guid);
         }
 
         Session ISessionManager.CreateSession(long user_id)
