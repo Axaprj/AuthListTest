@@ -14,6 +14,7 @@ namespace SessionData
         readonly Dictionary<Guid, Session> Cache = new Dictionary<Guid, Session>();
         readonly Thread CacheThread;
         DateTime RefreshTS = DateTime.MinValue;
+        long disposedValue = 0;
 
         public SessionCache()
         {
@@ -23,7 +24,7 @@ namespace SessionData
 
         void handlerCacheRefresh()
         {
-            while (true)
+            while (Interlocked.Read(ref disposedValue) == 0)
             {
                 var obsolescence_msec = DateTime.Now.Subtract(RefreshTS).TotalMilliseconds;
                 if(obsolescence_msec < REFRESH_TIMEOUT_MSEC)
@@ -123,27 +124,9 @@ namespace SessionData
             }
         }
 
-        #region IDisposable Support
-        private bool disposedValue = false; 
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    CacheThread.Abort();
-                }
-                disposedValue = true;
-            }
-        }
-
-        // This code added to correctly implement the disposable pattern.
         public void Dispose()
         {
-            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
-            Dispose(true);
+            Interlocked.Increment(ref disposedValue);
         }
-        #endregion
     }
 }
