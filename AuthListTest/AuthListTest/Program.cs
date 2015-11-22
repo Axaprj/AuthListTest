@@ -30,8 +30,6 @@ namespace AuthListTest
                 else if ("-THREADS".Equals(args[inx], StringComparison.InvariantCultureIgnoreCase))
                     thread_cnt = int.Parse(args[inx + 1]);
             }
-            Console.WriteLine("AuthListTest "
-                + (is_raw ? "-RAW " : "") + "-ITERATIONS " + iter_cnt + " -THREADS " + thread_cnt);
 
             Console.WriteLine("DB initialization");
             DbManager.InitializeDB(thread_cnt);
@@ -58,7 +56,10 @@ namespace AuthListTest
             {
                 Thread.Sleep(0);
             }
-            Console.WriteLine("TOTAL: " + (int)DateTime.Now.Subtract(started).TotalMilliseconds + "ms");
+            var total = (int)DateTime.Now.Subtract(started).TotalMilliseconds;
+            Console.WriteLine("TOTAL("+
+                (is_raw ? "RAW" : "CACHE") + ", ITERATIONS:" + iter_cnt + ", THREADS:" + thread_cnt + ") = " 
+                + total + "ms");
             SessionCacheManager.TerminateCaching();
         }
 
