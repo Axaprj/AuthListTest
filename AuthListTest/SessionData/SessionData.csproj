@@ -104,6 +104,10 @@
     </EntityDeploy>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\LICENSE">
+      <Link>LICENSE</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="App.config" />
     <None Include="packages.config" />
     <None Include="Sessions.edmx.diagram">
