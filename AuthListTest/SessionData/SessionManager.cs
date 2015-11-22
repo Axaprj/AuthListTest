@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SessionData
 {
+    /// <summary>
+    /// Raw Session Manager
+    /// </summary>
     public class SessionManager : ISessionManager
     {
         void ISessionManager.CloseSession(Guid session_guid)

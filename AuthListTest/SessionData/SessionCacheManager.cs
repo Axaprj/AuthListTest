@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace SessionData
 {
+    /// <summary>
+    /// Cached sessions manager
+    /// </summary>
     public class SessionCacheManager : ISessionManager
     {
         static readonly object CacheLock = new object();

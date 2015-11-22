@@ -6,8 +6,14 @@ using System.Threading.Tasks;
 
 namespace SessionData
 {
+    /// <summary>
+    /// Session entity
+    /// </summary>
     public partial class Session
     {
+        /// <summary>
+        /// Required session update activity gain
+        /// </summary>
         const int ACTIVITY_GRAIN_MSEC = 1000;
         public bool IsActivityUpdateRequired
         {
@@ -18,6 +24,9 @@ namespace SessionData
             }
         }
 
+        /// <summary>
+        /// Session Guid (string Id parse)
+        /// </summary>
         public Guid SessionGuid
         {
             get

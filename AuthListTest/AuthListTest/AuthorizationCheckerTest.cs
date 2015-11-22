@@ -29,6 +29,7 @@ namespace AuthListTest
 
         Guid CreateSession()
         {
+            // create odd sessions like processed by an another server - direct in DB 
             return (ThreadIndex % 2 == 0 ?
                 SessionMgr.CreateSession(UserId).SessionGuid :
                 DbManager.CreateSession(UserId).SessionGuid

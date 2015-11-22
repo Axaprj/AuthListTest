@@ -77,7 +77,6 @@
     </Compile>
     <Compile Include="SessionCache.cs" />
     <Compile Include="SessionCacheManager.cs" />
-    <Compile Include="SessionContainer.add.cs" />
     <Compile Include="SessionManager.cs" />
     <Compile Include="Sessions.Context.cs">
       <AutoGen>True</AutoGen>

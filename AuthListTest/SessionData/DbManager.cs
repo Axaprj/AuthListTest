@@ -8,8 +8,15 @@ using System.Data.Entity.Infrastructure;
 
 namespace SessionData
 {
-    public class DbManager
+    /// <summary>
+    /// DB routines
+    /// </summary>
+    public static class DbManager
     {
+        /// <summary>
+        /// Initialize DB for tests
+        /// </summary>
+        /// <param name="users_count">required users number</param>
         public static void InitializeDB(int users_count)
         {
             using (var dbx = new SessionsContainer())
@@ -28,6 +35,11 @@ namespace SessionData
             }
         }
 
+        /// <summary>
+        /// Get Users
+        /// </summary>
+        /// <param name="count">requested users number</param>
+        /// <returns></returns>
         public static User[] GetUsers(int count)
         {
             using (var dbx = new SessionsContainer())
@@ -37,6 +49,10 @@ namespace SessionData
         }
 
 
+        /// <summary>
+        /// Close session
+        /// </summary>
+        /// <param name="session_guid"></param>
         public static void CloseSession(Guid session_guid)
         {
             using (var dbx = new SessionsContainer())
@@ -48,6 +64,11 @@ namespace SessionData
             }
         }
 
+        /// <summary>
+        /// Create session for user
+        /// </summary>
+        /// <param name="user_id"></param>
+        /// <returns></returns>
         public static Session CreateSession(long user_id)
         {
             using (var dbx = new SessionsContainer())
@@ -68,6 +89,12 @@ namespace SessionData
             }
         }
 
+        /// <summary>
+        /// Get session including user entity
+        /// </summary>
+        /// <param name="session_guid"></param>
+        /// <param name="set_activity">update session activity flag</param>
+        /// <returns></returns>
         public static Session GetSession(Guid session_guid, bool set_activity)
         {
             using (var dbx = new SessionsContainer())
@@ -88,6 +115,10 @@ namespace SessionData
             }
         }
 
+        /// <summary>
+        ///  Get all sessions including user entity
+        /// </summary>
+        /// <returns></returns>
         public static Session[] GetSessions()
         {
             using (var dbx = new SessionsContainer())
@@ -96,6 +127,11 @@ namespace SessionData
             }
         }
 
+        /// <summary>
+        /// Update sessions activity 
+        /// if <see cref="Session.IsActivityUpdateRequired">required</see>
+        /// </summary>
+        /// <param name="sessions"></param>
         public static void UpdateActivity(Session[] sessions)
         {
             foreach (var sess in sessions)
@@ -116,12 +152,12 @@ namespace SessionData
                     }
                     catch (DbUpdateConcurrencyException cex)
                     {
+                        // session was removed
                         var hres = cex.HResult;
                     }
 
                 }
             }
         }
-
     }
 }
