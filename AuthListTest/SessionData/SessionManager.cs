@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace SessionData
 {
     /// <summary>
-    /// Raw Session Manager
+    /// Non cached (RAW) Session Manager
     /// </summary>
     public class SessionManager : ISessionManager
     {

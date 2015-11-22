@@ -8,7 +8,8 @@ using System.Threading.Tasks;
 namespace SessionData
 {
     /// <summary>
-    /// Cached sessions manager
+    /// Cached sessions manager. Static fields used.
+    /// In ASP.NET may by useful use System.Web.Caching.Cache.
     /// </summary>
     public class SessionCacheManager : ISessionManager
     {
