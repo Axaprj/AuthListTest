@@ -1,6 +1,7 @@
 # AuthListTest  (Authorization List Checker Test)
 
-AuthListTest is a performance comparison test utility of authentication SessionData library. In the SessionData implemented two modes:
+AuthListTest is a performance comparison test utility of SessionData (authorization list manager) library.
+In the SessionData implemented two modes:
 
   - RAW: Direct access to sessions database
   - Cached: Access to sessions data via specialized cache manager
