@@ -5,9 +5,9 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="5cbf8a6304dc49c0b59536d18a9505e8" Name="Diagram1" >
-        <EntityTypeShape EntityType="Sessions.Role" Width="1.5" PointX="0.75" PointY="1.125" />
-        <EntityTypeShape EntityType="Sessions.Session" Width="1.5" PointX="5.25" PointY="0.875" />
-        <EntityTypeShape EntityType="Sessions.User" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="Sessions.Role" Width="1.5" PointX="5.125" PointY="0.5" />
+        <EntityTypeShape EntityType="Sessions.Session" Width="1.5" PointX="0.5" PointY="0.5" />
+        <EntityTypeShape EntityType="Sessions.User" Width="1.5" PointX="2.875" PointY="0.5" />
         <AssociationConnector Association="Sessions.FK_Session_0_0" />
         <AssociationConnector Association="Sessions.UserRole" />
       </Diagram>

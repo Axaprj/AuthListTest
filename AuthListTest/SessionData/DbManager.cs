@@ -21,10 +21,18 @@ namespace SessionData
         {
             using (var dbx = new SessionsContainer())
             {
+                var user_role = dbx.Role.Where(r => r.Id == UserRoles.User).First();
+                var poweruser_role = dbx.Role.Where(r => r.Id == UserRoles.PowerUser).First();
+                var admin_role = dbx.Role.Where(r => r.Id == UserRoles.Admin).First();
                 users_count = users_count - dbx.User.Count();
                 for (int inx = 0; inx < users_count; inx++)
                 {
                     var usr = new User() { Name = "user" + Guid.NewGuid() };
+                    usr.Role.Add(user_role);
+                    if (inx % 2 == 0)
+                        usr.Role.Add(poweruser_role);
+                    if (inx % 3 == 0)
+                        usr.Role.Add(admin_role);
                     dbx.User.Add(usr);
                 }
                 foreach (var sess in dbx.Session)
@@ -84,7 +92,9 @@ namespace SessionData
                 };
                 dbx.Session.Add(sess);
                 dbx.SaveChanges();
-                sess = dbx.Session.Include(s => s.User).Where(s => s.Id == sqlite_guid).First();
+                sess = dbx.Session
+                    .Include(s => s.User.Role)
+                    .Where(s => s.Id == sqlite_guid).First();
                 return sess;
             }
         }
@@ -101,7 +111,7 @@ namespace SessionData
             {
                 var sqlite_guid = session_guid.ToString();
                 var qry =
-                    dbx.Session.Include(s => s.User).Where(s => s.Id == sqlite_guid);
+                    dbx.Session.Include(s => s.User.Role).Where(s => s.Id == sqlite_guid);
                 var sess = qry.FirstOrDefault();
                 if (set_activity && sess != null)
                 {
@@ -123,7 +133,7 @@ namespace SessionData
         {
             using (var dbx = new SessionsContainer())
             {
-                return dbx.Session.Include(s => s.User).ToArray();
+                return dbx.Session.Include(s => s.User.Role).ToArray();
             }
         }
 

@@ -96,6 +96,9 @@
     <Compile Include="User.cs">
       <DependentUpon>Sessions.tt</DependentUpon>
     </Compile>
+    <Compile Include="UserRoles.cs">
+      <DependentUpon>Sessions.tt</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <EntityDeploy Include="Sessions.edmx">

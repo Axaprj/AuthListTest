@@ -19,10 +19,18 @@ namespace AuthListTest
             var session_guid = CreateSession();
             for (int inx = 0; inx < IterationCount; inx++)
             {
-                if (SessionMgr.GetSessionUser(session_guid) == null)
+                var user = SessionMgr.GetSessionUser(session_guid);
+                if (user == null)
                 {
-                    throw new Exception("Session [" + session_guid + "] not found");
+                    throw new Exception("Session '" + session_guid + "' not found");
                 }
+                var user_role = user.Role.Where(r => r.Id == UserRoles.User).FirstOrDefault();
+                if( user_role == null)
+                {
+                    throw new Exception("User '" + user.Name + "' has not User role");
+                }
+                var powerusr_role = user.Role.Where(r => r.Id == UserRoles.PowerUser).FirstOrDefault();
+                var admin_role = user.Role.Where(r => r.Id == UserRoles.Admin).FirstOrDefault();
             }
             SessionMgr.CloseSession(session_guid);
         }

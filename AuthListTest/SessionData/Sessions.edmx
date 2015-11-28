@@ -111,7 +111,7 @@
           <Key>
             <PropertyRef Name="Id" />
           </Key>
-          <Property Name="Id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Id" Type="Sessions.UserRoles" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="2147483647" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="User" Relationship="Sessions.UserRole" FromRole="Role" ToRole="User" />
         </EntityType>
@@ -150,6 +150,11 @@
           <End Type="Sessions.Role" Role="Role" Multiplicity="*" />
           <End Type="Sessions.User" Role="User" Multiplicity="*" />
         </Association>
+        <EnumType Name="UserRoles" UnderlyingType="Int64">
+          <Member Name="User" Value="10" />
+          <Member Name="PowerUser" Value="20" />
+          <Member Name="Admin" Value="30" />
+        </EnumType>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->

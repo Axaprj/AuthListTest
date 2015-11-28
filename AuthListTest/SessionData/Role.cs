@@ -20,7 +20,7 @@ namespace SessionData
             this.User = new HashSet<User>();
         }
     
-        public long Id { get; set; }
+        public UserRoles Id { get; set; }
         public string Name { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
