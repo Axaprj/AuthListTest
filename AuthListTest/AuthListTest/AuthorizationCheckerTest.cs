@@ -9,6 +9,7 @@ namespace AuthListTest
 {
     class AuthorizationCheckerTest
     {
+        public bool IsSilent;
         public int ThreadIndex;
         public long UserId;
         public int IterationCount;

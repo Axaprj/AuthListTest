@@ -16,24 +16,30 @@ namespace AuthListTest
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Authorization List Checker Test");
-            Console.WriteLine("AuthListTest [-RAW] [-ITERATIONS <#>] [-THREADS <#>]");
             bool is_raw = false;
+            bool is_silent = false;
             int thread_cnt = DEFAULT_THREAD_CNT;
             int iter_cnt = DEFAULT_ITERATION_CNT;
             for (int inx = 0; inx < args.Length; inx++)
             {
                 if ("-RAW".Equals(args[inx], StringComparison.InvariantCultureIgnoreCase))
                     is_raw = true;
+                if ("-SILENT".Equals(args[inx], StringComparison.InvariantCultureIgnoreCase))
+                    is_silent = true;
                 else if ("-ITERATIONS".Equals(args[inx], StringComparison.InvariantCultureIgnoreCase))
                     iter_cnt = int.Parse(args[inx + 1]);
                 else if ("-THREADS".Equals(args[inx], StringComparison.InvariantCultureIgnoreCase))
                     thread_cnt = int.Parse(args[inx + 1]);
             }
-
-            Console.WriteLine("DB initialization");
+            if (!is_silent)
+            {
+                Console.WriteLine("Authorization List Checker Test");
+                Console.WriteLine("AuthListTest [-RAW] [-SILENT] [-ITERATIONS <#>] [-THREADS <#>]");
+                Console.WriteLine("DB initialization");
+            }
             DbManager.InitializeDB(thread_cnt);
-            Console.WriteLine("Done");
+            if (!is_silent)
+                Console.WriteLine("Done");
 
             User[] users = DbManager.GetUsers(thread_cnt);
             var started = DateTime.Now;
@@ -43,6 +49,7 @@ namespace AuthListTest
             {
                 var test = new AuthorizationCheckerTest()
                 {
+                    IsSilent = is_silent, 
                     ThreadIndex = i,
                     UserId = users[i].Id,
                     IterationCount = iter_cnt,
@@ -57,8 +64,11 @@ namespace AuthListTest
                 Thread.Sleep(0);
             }
             var total = (int)DateTime.Now.Subtract(started).TotalMilliseconds;
-            Console.WriteLine("TOTAL("+
-                (is_raw ? "RAW" : "CACHE") + ", ITERATIONS:" + iter_cnt + ", THREADS:" + thread_cnt + ") = " 
+            if (is_silent)
+                Console.WriteLine(total);
+            else
+                Console.WriteLine("TOTAL(" +
+                (is_raw ? "RAW" : "CACHE") + ", ITERATIONS:" + iter_cnt + ", THREADS:" + thread_cnt + ") = "
                 + total + "ms");
             SessionCacheManager.TerminateCaching();
         }
@@ -67,11 +77,13 @@ namespace AuthListTest
         {
             var test = (AuthorizationCheckerTest)stateInfo;
             var lbl = "#" + test.ThreadIndex;
-            Console.WriteLine(lbl + " start");
+            if(!test.IsSilent)
+                Console.WriteLine(lbl + " start");
             try
             {
                 test.DoTest();
-                Console.WriteLine(lbl + " stop");
+                if (!test.IsSilent)
+                    Console.WriteLine(lbl + " stop");
             }
             catch (Exception ex)
             {
