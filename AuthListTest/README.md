@@ -1,4 +1,5 @@
 # AuthListTest  (Authorization List Checker Test)
+http://www.codeproject.com/Tips/1062378/Overloaded-Server-Quick-Fix
 
 AuthListTest is a performance comparison test utility of SessionData (authorization list manager) library.
 In the SessionData implemented two modes:
